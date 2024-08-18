@@ -9,8 +9,8 @@ trait List[A] {
   def add(i: Int, x: A): Unit
   def remove(i: Int): A
 
-  def toListBuffer: mutable.ListBuffer[A] = {
-    val xs = new mutable.ListBuffer[A]();
+  def toScalaListBuffer: mutable.ListBuffer[A] = {
+    val xs = new mutable.ListBuffer[A]()
     for (i <- Range(0, this.size)) {
       xs.addOne(this.get(i))
     }

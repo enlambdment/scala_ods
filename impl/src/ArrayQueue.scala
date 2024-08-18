@@ -18,8 +18,7 @@ class ArrayQueue[A: ClassTag] extends api.Queue[A] {
     j = 0
   }
 
-  /* not strictly needed */
-  def size(): Int = n
+  override def size(): Int = n
 
   override def enqueue(x: A): Unit = {
     if (n + 1 > a.length) {

@@ -3,6 +3,7 @@ package impl
 import impl.{QueueMethod => QM}
 import org.scalacheck.{Arbitrary, Gen}
 
+import scala.collection.mutable
 import scala.util.Try
 
 object QueueTestUtils {
@@ -44,9 +45,29 @@ object QueueTestUtils {
     }
   }
 
-  def runQActions[A, QA <: api.Queue[A]](as0: QA, qacts: List[QM.QueueMethod[A]]): Option[QA] = {
-    qacts.foldLeft(Option(as0)) { (asOpt, qact) =>
-      asOpt.flatMap(runQAction(_, qact))
+  def runQAction[A](as: mutable.Queue[A], qact: QM.QueueMethod[A]): Option[mutable.Queue[A]] = {
+    qact match {
+      case QueueMethod.QueueEnqueue(x) => Try {
+        as.enqueue(x); as
+      }.toOption
+      case QueueMethod.QueueDequeue() => Try {
+        as.dequeue(); as
+      }.toOption
+    }
+  }
+
+  def runQActions[A, QA <: api.Queue[A]](
+    queueObjects0: (QA, mutable.Queue[A]),
+    qacts: List[QM.QueueMethod[A]]
+  ): Option[(QA, mutable.Queue[A])] = {
+    qacts.foldLeft(Option(queueObjects0)) { case (queueObjectsOpt, lact) =>
+      for {
+        (xs, xq) <- queueObjectsOpt
+        ys <- runQAction(xs, lact)
+        yq <- runQAction(xq, lact)
+      } yield {
+        (ys, yq)
+      }
     }
   }
 }

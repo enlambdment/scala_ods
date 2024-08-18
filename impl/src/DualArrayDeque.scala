@@ -107,11 +107,11 @@ class DualArrayDeque[A: ClassTag] extends api.List[A] with api.Deque[A] {
     x
   }
 
-  override def addFirst(x: A): Unit = ???
+  override def addFirst(x: A): Unit = add(0, x)
 
-  override def removeFirst(): A = ???
+  override def removeFirst(): A = remove(0)
 
-  override def addLast(x: A): Unit = ???
+  override def addLast(x: A): Unit = add(size(), x)
 
-  override def removeLast(): A = ???
+  override def removeLast(): A = remove(size() - 1)
 }
