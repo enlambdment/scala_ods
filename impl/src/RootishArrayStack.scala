@@ -24,17 +24,79 @@ class RootishArrayStack[A: ClassTag] extends api.List[A] with api.Stack[A] {
   /* Private counter for number of elements. */
   private var n: Int = 0
 
-  override def size(): Int = ???
+  /**
+   * Given an index i into the list (based on zero-indexing),
+   * get the block index into `blocks` where that item should
+   * be stored (also based on zero-indexing.)
+   * @param i Index of item in the list being stored.
+   * @return  Index of the block containing the item at that index.
+   */
+  private def i2b(i: Int): Int = {
+    val db: Double = (-3 + Math.sqrt(9 + (8 * i))) / 2.0
+    Math.ceil(db).toInt
+  }
 
-  override def get(i: Int): A = ???
+  private def grow(): Unit = {
+    val s = blocks.size()       // get current # of blocks, which = size of largest block
+    val b = new Array[A](s + 1) // next block will contain 1 more item than the previous
+    blocks.add(s, b)
+  }
 
-  override def set(i: Int, x: A): A = ???
+  private def shrink(): Unit = {
+    // remove the topmost block, located at (s - 1) where s = # of blocks being used
+    val s = blocks.size()
+    if (s > 0) {
+      blocks.remove(s - 1)
+    }
+  }
 
-  override def add(i: Int, x: A): Unit = ???
+  override def size(): Int = n
 
-  override def remove(i: Int): A = ???
+  override def get(i: Int): A = {
+    val b: Int = i2b(i)
+    val j: Int = i - ((b * (b + 1)) / 2) // calculate offset along the block
+    blocks.get(b)(j)
+  }
 
-  override def push(x: A): Unit = ???
+  override def set(i: Int, x: A): A = {
+    val b: Int = i2b(i)
+    val j: Int = i - ((b * (b + 1)) / 2) // calculate offset along the block
+    val y: A = blocks.get(b)(j)
+    blocks.get(b)(j) = x
+    y
+  }
 
-  override def pop(): A = ???
+  override def add(i: Int, x: A): Unit = {
+    val r = blocks.size()
+    if (n == r * (r + 1) / 2) {
+      grow()
+    }
+    for (j <- Range(n, i, -1)) {
+      this.set(j, this.get(j - 1))
+    }
+    this.set(i, x)
+    n += 1
+  }
+
+  override def remove(i: Int): A = {
+    val x: A = this.get(i)
+    for (j <- Range(i + 1, n)) {
+      this.set(j - 1, this.get(j))
+    }
+    n -= 1
+    val r = blocks.size()
+    // once there are more than 1 blocks going unused, remove one
+    if (n <= (r - 2) * (r - 1) / 2) {
+      shrink()
+    }
+    x
+  }
+
+  override def push(x: A): Unit = {
+     this.add(this.size, x)
+  }
+
+  override def pop(): A = {
+    this.remove(this.size - 1)
+  }
 }

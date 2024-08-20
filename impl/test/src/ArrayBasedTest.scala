@@ -67,5 +67,17 @@ object ArrayBasedTest extends TestSuite {
       }
       propListOps.check()
     }
+
+    test("RootishArrayStack test") {
+      val ns: RootishArrayStack[Int] = new RootishArrayStack[Int]
+      val propListOps = forAll(genLActions[Int](ns.size(), 20)) { lms =>
+        val nbuff: mutable.ListBuffer[Int] = ns.toScalaListBuffer
+        val resultOpt = runLActions((ns, nbuff), lms)
+        resultOpt.isDefined && resultOpt.exists { case (resultList, resultBuff) =>
+          resultList.toScalaListBuffer == resultBuff
+        }
+      }
+      propListOps.check()
+    }
   }
 }
