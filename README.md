@@ -1,3 +1,3 @@
 # scala-ods
 
-Scala code to accompany [https://opendatastructures.org/](_Open Data Structures_), a free & open-content textbook on data structures.
+Scala code to accompany [_Open Data Structures_](https://opendatastructures.org/), a free & open-content textbook on data structures.
