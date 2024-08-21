@@ -9,8 +9,8 @@ import scala.collection.mutable
 object ArrayBasedTest extends TestSuite {
   def tests = Tests {
     test("ArrayStack test") {
-      val ns: ArrayStack[Int] = new ArrayStack[Int]
-      val propListOps = forAll(genLActions[Int](ns.size(), 20)) { lms =>
+      val propListOps = forAll(genLActions[Int](0, 20)) { lms =>
+        val ns: ArrayStack[Int] = new ArrayStack[Int]
         val nbuff: mutable.ListBuffer[Int] = ns.toScalaListBuffer
         val resultOpt = runLActions((ns, nbuff), lms)
         resultOpt.isDefined && resultOpt.exists { case (resultList, resultBuff) =>
@@ -21,8 +21,8 @@ object ArrayBasedTest extends TestSuite {
     }
 
     test("FastArrayStack test") {
-      val ns: FastArrayStack[Int] = new FastArrayStack[Int]
-      val propListOps = forAll(genLActions[Int](ns.size(), 20)) { lms =>
+      val propListOps = forAll(genLActions[Int](0, 20)) { lms =>
+        val ns: FastArrayStack[Int] = new FastArrayStack[Int]
         val nbuff: mutable.ListBuffer[Int] = ns.toScalaListBuffer
         val resultOpt = runLActions((ns, nbuff), lms)
         resultOpt.isDefined && resultOpt.exists { case (resultList, resultBuff) =>
@@ -33,8 +33,8 @@ object ArrayBasedTest extends TestSuite {
     }
 
     test("ArrayQueue test") {
-      val ns: ArrayQueue[Int] = new ArrayQueue[Int]
-      val propListOps = forAll(genQActions[Int](ns.size(), 20)) { qms =>
+      val propListOps = forAll(genQActions[Int](0, 20)) { qms =>
+        val ns: ArrayQueue[Int] = new ArrayQueue[Int]
         val nq: mutable.Queue[Int] = ns.toScalaQueue
         val resultOpt = runQActions((ns, nq), qms)
         resultOpt.isDefined && resultOpt.exists { case (resultQueue, resultScalaQueue) =>
@@ -45,8 +45,8 @@ object ArrayBasedTest extends TestSuite {
     }
 
     test("ArrayDeque test") {
-      val ns: ArrayDeque[Int] = new ArrayDeque[Int]
-      val propListOps = forAll(genLActions[Int](ns.size(), 20)) { lms =>
+      val propListOps = forAll(genLActions[Int](0, 20)) { lms =>
+        val ns: ArrayDeque[Int] = new ArrayDeque[Int]
         val nbuff: mutable.ListBuffer[Int] = ns.toScalaListBuffer
         val resultOpt = runLActions((ns, nbuff), lms)
         resultOpt.isDefined && resultOpt.exists { case (resultList, resultBuff) =>
@@ -57,8 +57,8 @@ object ArrayBasedTest extends TestSuite {
     }
 
     test("DualArrayDeque test") {
-      val ns: DualArrayDeque[Int] = new DualArrayDeque[Int]
-      val propListOps = forAll(genLActions[Int](ns.size(), 20)) { lms =>
+      val propListOps = forAll(genLActions[Int](0, 20)) { lms =>
+        val ns: DualArrayDeque[Int] = new DualArrayDeque[Int]
         val nbuff: mutable.ListBuffer[Int] = ns.toScalaListBuffer
         val resultOpt = runLActions((ns, nbuff), lms)
         resultOpt.isDefined && resultOpt.exists { case (resultList, resultBuff) =>
@@ -69,8 +69,8 @@ object ArrayBasedTest extends TestSuite {
     }
 
     test("RootishArrayStack test") {
-      val ns: RootishArrayStack[Int] = new RootishArrayStack[Int]
-      val propListOps = forAll(genLActions[Int](ns.size(), 20)) { lms =>
+      val propListOps = forAll(genLActions[Int](0, 20)) { lms =>
+        val ns: RootishArrayStack[Int] = new RootishArrayStack[Int]
         val nbuff: mutable.ListBuffer[Int] = ns.toScalaListBuffer
         val resultOpt = runLActions((ns, nbuff), lms)
         resultOpt.isDefined && resultOpt.exists { case (resultList, resultBuff) =>
