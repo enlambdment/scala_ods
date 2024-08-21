@@ -7,4 +7,6 @@ object ListMethod {
   case class ListSet[A](i: Int, x: A) extends ListMethod[A]
   case class ListAdd[A](i: Int, x: A) extends ListMethod[A]
   case class ListRemove[A](i: Int) extends ListMethod[A]
+
+  case class ListAddAll[A](i: Int, c: Iterable[A]) extends ListMethod[A]
 }

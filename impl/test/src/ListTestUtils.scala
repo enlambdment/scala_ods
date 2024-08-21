@@ -25,13 +25,22 @@ object ListTestUtils {
     i <- Gen.choose(0, s - 1)
   } yield LM.ListRemove(i)
 
+  def genLAddAll[A](s: Int)(implicit arb: Arbitrary[A]): Gen[LM.ListMethod[A]] = for {
+    i <- Gen.choose(0, s)
+    n <- Gen.choose(1, 10)
+    c <- Gen.listOfN(n, Arbitrary.arbitrary[A])
+  } yield LM.ListAddAll(i, c)
+
   def genLActionAndNextSize[A](s: Int)(implicit arb: Arbitrary[A]): Gen[(LM.ListMethod[A], Int)] =
     if (s > 0) {
       Gen.frequency(
         (1, genLGet[A](s).map(lm => (lm, s))),
         (1, genLSet[A](s).map(lm => (lm, s))),
         (2, genLAdd[A](s).map(lm => (lm, s + 1))),
-        (1, genLRemove[A](s).map(lm => (lm, s - 1)))
+        (1, genLRemove[A](s).map(lm => (lm, s - 1))),
+        (1, genLAddAll[A](s).map {
+          case lm@LM.ListAddAll(_, c) => (lm, s + c.size)
+        })
       )
     } else {
       genLAdd[A](s).map(lm => (lm, s + 1))
@@ -63,23 +72,29 @@ object ListTestUtils {
       case LM.ListRemove(i) => Try {
         as.remove(i); as
       }.toOption
+      case LM.ListAddAll(i, c) => Try {
+        as.addAll(i, c); as
+      }.toOption
     }
   }
 
   def runLAction[A](as: mutable.ListBuffer[A], lact: LM.ListMethod[A]): Option[mutable.ListBuffer[A]] = {
     lact match {
-      case ListMethod.ListSize() => Some(as)
-      case ListMethod.ListGet(i) => Try {
+      case LM.ListSize() => Some(as)
+      case LM.ListGet(i) => Try {
         as(i); as
       }.toOption
-      case ListMethod.ListSet(i, x) => Try {
+      case LM.ListSet(i, x) => Try {
         as(i) = x; as
       }.toOption
-      case ListMethod.ListAdd(i, x) => Try {
+      case LM.ListAdd(i, x) => Try {
         as.insert(i, x); as
       }.toOption
-      case ListMethod.ListRemove(i) => Try {
+      case LM.ListRemove(i) => Try {
         as.remove(i); as
+      }.toOption
+      case LM.ListAddAll(i, c) => Try {
+        as.insertAll(i, c); as
       }.toOption
     }
   }
