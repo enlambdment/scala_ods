@@ -2,9 +2,11 @@ package impl
 
 import scala.reflect.ClassTag
 
-class FastArrayStack[A: ClassTag] extends api.List[A] with api.Stack[A] {
+class FastArrayStack[A: ClassTag] extends api.List[A] {
   private var n: Int = 0
   private var a: Array[A] = new Array[A](1)
+
+  override def newInstance: FastArrayStack[A] = new FastArrayStack[A]()
 
   /**
    * In order for custom instance implementation of `addAll` to work,
@@ -98,14 +100,5 @@ class FastArrayStack[A: ClassTag] extends api.List[A] with api.Stack[A] {
       this.set(j, x)
       j += 1
     }
-  }
-
-  // FastArrayStack efficiently implements the Stack operations in constant time
-  override def push(x: A): Unit = {
-    add(size(), x)
-  }
-
-  override def pop(): A = {
-    remove(size())
   }
 }

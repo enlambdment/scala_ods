@@ -16,6 +16,8 @@ class DualArrayDeque[A: ClassTag] extends api.List[A] with api.Deque[A] {
   private var front: api.List[A] = new ArrayStack[A]
   private var back: api.List[A] = new ArrayStack[A]
 
+  override def newInstance: DualArrayDeque[A] = new DualArrayDeque[A]()
+
   private def balance(): Unit = {
     val n: Int = size()
     if (n >= 2) {

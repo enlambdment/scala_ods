@@ -2,12 +2,22 @@ package api
 
 import scala.collection.mutable
 
-trait List[A] {
+trait List[A] extends Stack[A] {
   def size(): Int
   def get(i: Int): A
   def set(i: Int, x: A): A
   def add(i: Int, x: A): Unit
   def remove(i: Int): A
+
+  // Default implementation for Stack methods, available for any instance of List
+  override def newInstance: List[A]
+  override def push(x: A): Unit = {
+    add(size(), x)
+  }
+
+  override def pop(): A = {
+    remove(size() - 1)
+  }
 
   /**
    * Default implementation of the addAll operation for a sequence `c` of items

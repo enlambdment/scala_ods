@@ -7,6 +7,8 @@ class ArrayDeque[A: ClassTag] extends api.List[A] with api.Deque[A] {
   private var j = 0
   private var n = 0
 
+  override def newInstance: ArrayDeque[A] = new ArrayDeque[A]()
+
   private def resize(): Unit = {
     val b = new Array[A](Math.max(2 * n, 1))
     for (i <- Range(0, n)) {

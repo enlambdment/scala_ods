@@ -1,9 +1,11 @@
 package impl
 
+import api.Stack
 import impl.{ArrayStack => ODSStack}
+
 import scala.reflect.ClassTag
 
-class RootishArrayStack[A: ClassTag] extends api.List[A] with api.Stack[A] {
+class RootishArrayStack[A: ClassTag] extends api.List[A] {
   /*
   There are r backing arrays at any time, numbered with 0-indexing
   (0, 1, 2, ..., r - 1.) These are called _blocks_ and they are tracked
@@ -23,6 +25,8 @@ class RootishArrayStack[A: ClassTag] extends api.List[A] with api.Stack[A] {
   private val blocks: api.List[Array[A]] = new ODSStack[Array[A]]()
   /* Private counter for number of elements. */
   private var n: Int = 0
+
+  override def newInstance: RootishArrayStack[A] = new RootishArrayStack[A]()
 
   /**
    * Given an index i into the list (based on zero-indexing),
@@ -90,13 +94,5 @@ class RootishArrayStack[A: ClassTag] extends api.List[A] with api.Stack[A] {
       shrink()
     }
     x
-  }
-
-  override def push(x: A): Unit = {
-     this.add(this.size, x)
-  }
-
-  override def pop(): A = {
-    this.remove(this.size - 1)
   }
 }

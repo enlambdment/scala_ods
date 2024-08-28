@@ -2,9 +2,12 @@ package impl
 
 import scala.reflect.ClassTag
 
-class ArrayStack[A: ClassTag] extends api.List[A] with api.Stack[A] {
+class ArrayStack[A: ClassTag] extends api.List[A] {
   private var n: Int = 0
   private var a: Array[A] = new Array[A](1)
+
+
+  override def newInstance: ArrayStack[A] = new ArrayStack[A]()
 
   private def resize(): Unit = {
     val b = new Array[A](Math.max(2 * n, 1))
@@ -59,14 +62,5 @@ class ArrayStack[A: ClassTag] extends api.List[A] with api.Stack[A] {
       resize()
     }
     x
-  }
-
-  // ArrayStack efficiently implements the Stack operations in constant time
-  override def push(x: A): Unit = {
-    add(size(), x)
-  }
-
-  override def pop(): A = {
-    remove(size())
   }
 }
