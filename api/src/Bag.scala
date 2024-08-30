@@ -28,9 +28,9 @@ trait Bag[A, L <: List[A], B <: USet[Partition[A, L]]] extends USet[A] {
   val listFactory: L
 
   /**
-   * Default implementations for the bag methods, leveraging the methods
-   * of the backing USet as well as the behavior due to custom Eq instance
-   * for Partition[A].
+   * Default implementations for the USet methods, in the specific context of
+   * a multiset. Leverages the methods of the backing USet as well as the behavior
+   * due to custom Eq instance for Partition[A].
    */
   override def size(): Int = items
     .iterator
@@ -41,7 +41,8 @@ trait Bag[A, L <: List[A], B <: USet[Partition[A, L]]] extends USet[A] {
    * Add the element x to the bag, regardless of whether equal elements are already present.
    *
    * @param x Item to be added to the bag.
-   * @return  Boolean indicating whether (any element equal to) x was already present in the bag.
+   * @return  Boolean indicating whether x is a new addition to the bag (i.e. there were no
+   *          existing elements equal to x.)
    */
   override def add(x: A): Boolean = {
     val emptyPartition: Partition[A, L] = Partition(x, listFactory.newInstance.asInstanceOf[L])
