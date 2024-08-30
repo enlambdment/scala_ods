@@ -4,7 +4,6 @@ import cats.kernel.Eq
 
 import scala.reflect.ClassTag
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 /**
  * A simple list-backed implementation of a USet (unordered set.) Merely for test-driving
@@ -25,7 +24,7 @@ import scala.collection.mutable.ListBuffer
 class ArrayUSet[A: ClassTag](implicit eqA: Eq[A]) extends api.USet[A] {
   override implicit val eq: Eq[A] = eqA
 
-  private val xs: mutable.ListBuffer[A] = new ListBuffer[A]
+  private val xs: mutable.ListBuffer[A] = new mutable.ListBuffer[A]
 
   override def iterator: Iterator[A] = xs.iterator
 

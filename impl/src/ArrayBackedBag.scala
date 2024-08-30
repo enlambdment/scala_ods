@@ -4,7 +4,6 @@ import cats.kernel.Eq
 import scala.reflect.ClassTag
 
 import api.{Bag, Partition}
-import impl.{RootishArrayStack, ArrayUSet}
 
 /**
  * A simple ArrayUSet-backed implementation of a Bag (multiset.) Not meant to be efficient.

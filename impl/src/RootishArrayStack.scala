@@ -1,6 +1,5 @@
 package impl
 
-import api.Stack
 import impl.{ArrayStack => ODSStack}
 
 import scala.reflect.ClassTag
