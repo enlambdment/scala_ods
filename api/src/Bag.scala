@@ -1,6 +1,6 @@
 package api
 
-//import api.{Partition, USet}
+import cats.kernel.Eq
 
 /**
  * Using a USet, implement a Bag (a.k.a. a Multiset.)
@@ -14,6 +14,8 @@ package api
  * @tparam A Type of contents of the unordered bag (multiset.)
  */
 trait Bag[A, L <: List[A], B <: USet[Partition[A, L]]] extends USet[A] {
+  implicit val eq: Eq[A]
+
   /**
    * The backing structure for the bag is to be an unordered set of
    * item partitions. Each partition is, underneath, a key representing
@@ -87,7 +89,7 @@ trait Bag[A, L <: List[A], B <: USet[Partition[A, L]]] extends USet[A] {
     )
     val matchOpt: Option[A] = currentPartitionOpt.map { p =>
       val xMembers: List[A] = p.members
-      xMembers.get(xMembers.size())
+      xMembers.get(xMembers.size() - 1)
     }
     matchOpt
   }
