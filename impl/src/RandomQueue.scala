@@ -48,14 +48,14 @@ class RandomQueue[A: ClassTag] extends api.Queue[A] {
   }
 
   /**
-   * Overrides the conversion to Scala mutable.Queue[A] because that one
-   * relies on the concrete implementation adding / removing elements in
-   * FIFO order, which RandomQueue does not.
+   * Overrides the conversion to Scala mutable.Queue[A] due to the base trait
+   * because that one relies on the concrete implementation adding / removing
+   * elements in FIFO order, which RandomQueue does not.
    *
    * @return The RandomQueue, converted to a standard scala Queue (with FIFO
    *         queuing discipline.)
    */
-  override def toScalaQueue: mutable.Queue[A] = {
+  override def toScala: mutable.Queue[A] = {
     mutable.Queue[A](a.take(n).toIndexedSeq:_*)
   }
 

@@ -10,7 +10,7 @@ trait Queue[A] {
   def enqueue(x: A): Unit
   def dequeue(): A
 
-  def toScalaQueue: mutable.Queue[A] = {
+  def toScala: mutable.Queue[A] = {
     val xs = new mutable.Queue[A]()
     for (_ <- Range(0, this.size())) {
       val x = this.dequeue()

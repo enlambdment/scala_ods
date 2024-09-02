@@ -36,7 +36,7 @@ trait List[A] extends Stack[A] {
     }
   }
 
-  def toScalaListBuffer: mutable.ListBuffer[A] = {
+  def toScala: mutable.ListBuffer[A] = {
     val xs = new mutable.ListBuffer[A]()
     for (i <- Range(0, this.size)) {
       xs.addOne(this.get(i))
