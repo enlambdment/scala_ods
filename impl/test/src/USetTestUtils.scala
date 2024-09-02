@@ -102,4 +102,21 @@ object USetTestUtils {
       case USetMethod.USetFind(x) => UR.USetAOpt(as.find(Eq.eqv(_, x)))
     }
   }
+
+  case class USetTestOutcome[A, UA <: api.USet[A]](
+    outputs: List[(UR.USetReturn[A], UR.USetReturn[A])],
+    finals: (UA, mutable.HashSet[A])
+  )
+
+  def runUActions[A: Eq, UA <: api.USet[A]](
+    usetObjects0: (UA, mutable.HashSet[A]),
+    uacts: List[UM.USetMethod[A]]
+  ): USetTestOutcome[A, UA] = {
+    val outcome = USetTestOutcome(List.empty, usetObjects0)
+    uacts.foldLeft(outcome)({ case (USetTestOutcome(outs, (uset, hashset)), uact) =>
+      val uout = runUAction(uset, uact)
+      val hashout = runUAction(hashset, uact)
+      USetTestOutcome(outs :+ (uout, hashout), (uset, hashset))
+    })
+  }
 }
