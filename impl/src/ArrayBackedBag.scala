@@ -3,7 +3,7 @@ package impl
 import cats.kernel.Eq
 import scala.reflect.ClassTag
 
-import api.{Bag, Partition}
+import api.{PartitionedBag, Partition}
 
 /**
  * A simple ArrayUSet-backed implementation of a Bag (multiset.) Not meant to be efficient.
@@ -14,13 +14,13 @@ import api.{Bag, Partition}
  */
 class ArrayBackedBag[A: ClassTag](
   implicit eqA: Eq[A]
-) extends Bag[A, RootishArrayStack[A], ArrayUSet[Partition[A, RootishArrayStack[A]]]] {
+) extends PartitionedBag[A, RootishArrayStack[A], ArrayUSet[Partition[A, RootishArrayStack[A]]]] {
   override val eq: Eq[A] = eqA
   override var items: ArrayUSet[Partition[A, RootishArrayStack[A]]] = new ArrayUSet()
   override val listFactory: RootishArrayStack[A] = new RootishArrayStack()
   override val iterator: Iterator[A] = for {
     partition <- items.iterator
     ms = partition.members
-    m <- ms.toScalaListBuffer
+    m <- ms.toScala
   } yield { m }
 }
