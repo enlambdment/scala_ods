@@ -1,6 +1,7 @@
 package impl
 
-import impl.{USetMethod => UM}
+import cats.kernel.Eq
+import impl.{USetMethod => UM, USetReturn => UR}
 import org.scalacheck.{Arbitrary, Gen}
 
 import scala.collection.mutable
@@ -66,5 +67,39 @@ object USetTestUtils {
     x <- Gen.oneOf(items.included + items.excluded)
   } yield UM.USetFind(x)
 
-//  def genUAction[A](items: TestItems[A]): Gen[UM.USetMethod[A]] =
+  def genUAction[A](items: TestItems[A]): Gen[UM.USetMethod[A]] = {
+    Gen.frequency(
+      (3, genUAdd[A](items)),
+      (1, genURemove[A](items)),
+      (1, genUFind[A](items)),
+    )
+  }
+
+  def genUActions[A](items: TestItems[A], nActions: Int): Gen[List[UM.USetMethod[A]]] = {
+    val genAction: Gen[UM.USetMethod[A]] = genUAction[A](items)
+    Gen.listOfN(nActions, genAction)
+  }
+
+  def runUAction[A, UA <: api.USet[A]](as: UA, uact: UM.USetMethod[A]): UR.USetReturn[A] = {
+    uact match {
+      case USetMethod.USetSize() => UR.USetInt(as.size())
+      case USetMethod.USetAdd(x) => UR.USetBoolean(as.add(x))
+      case USetMethod.USetRemove(x) => UR.USetAOpt(as.remove(x))
+      case USetMethod.USetFind(x) => UR.USetAOpt(as.find(x))
+    }
+  }
+
+  def runUAction[A : Eq](as: mutable.HashSet[A], uact: UM.USetMethod[A]): UR.USetReturn[A] = {
+    uact match {
+      case USetMethod.USetSize() => UR.USetInt(as.size)
+      case USetMethod.USetAdd(x) => UR.USetBoolean(as.add(x))
+      case USetMethod.USetRemove(x) => {
+        // simulated api.USet.remove for Scala HashSet
+        val matchOpt = as.find(Eq.eqv(_, x))
+        matchOpt.foreach(as.remove)
+        UR.USetAOpt(matchOpt)
+      }
+      case USetMethod.USetFind(x) => UR.USetAOpt(as.find(Eq.eqv(_, x)))
+    }
+  }
 }
