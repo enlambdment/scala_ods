@@ -60,11 +60,11 @@ object USetTestUtils {
   } yield UM.USetAdd(x)
 
   def genURemove[A](items: TestItems[A]): Gen[UM.USetMethod[A]] = for {
-    x <- Gen.oneOf(items.included + items.excluded)
+    x <- Gen.oneOf(items.included ++ items.excluded)
   } yield UM.USetRemove(x)
 
   def genUFind[A](items: TestItems[A]): Gen[UM.USetMethod[A]] = for {
-    x <- Gen.oneOf(items.included + items.excluded)
+    x <- Gen.oneOf(items.included ++ items.excluded)
   } yield UM.USetFind(x)
 
   def genUAction[A](items: TestItems[A]): Gen[UM.USetMethod[A]] = {
@@ -78,6 +78,13 @@ object USetTestUtils {
   def genUActions[A](items: TestItems[A], nActions: Int): Gen[List[UM.USetMethod[A]]] = {
     val genAction: Gen[UM.USetMethod[A]] = genUAction[A](items)
     Gen.listOfN(nActions, genAction)
+  }
+
+  def genUActions[A](nActions: Int)(implicit arb: Arbitrary[A]): Gen[List[UM.USetMethod[A]]] = for {
+    items     <- genTestItems[A](12)
+    uActions  <- genUActions(items, nActions)
+  } yield {
+    uActions
   }
 
   def runUAction[A, UA <: api.USet[A]](as: UA, uact: UM.USetMethod[A]): UR.USetReturn[A] = {
