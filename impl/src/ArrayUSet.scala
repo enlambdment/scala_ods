@@ -57,4 +57,10 @@ class ArrayUSet[A: ClassTag](implicit eqA: Eq[A]) extends api.USet[A] {
     }
     result
   }
+
+  override def toScala: mutable.HashSet[A] = {
+    val hashSet = new mutable.HashSet[A]()
+    for (elem <- this.iterator) { hashSet.add(elem) }
+    hashSet
+  }
 }

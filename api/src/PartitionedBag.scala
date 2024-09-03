@@ -2,6 +2,9 @@ package api
 
 import cats.kernel.Eq
 
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
+
 /**
  * The abstract trait PartitionedBag captures the pattern whereby a Bag is implemented
  * as an unordered set of partitions. Each partition stores an equivalence class of items
@@ -115,5 +118,14 @@ trait PartitionedBag[A, L <: List[A], B <: USet[Partition[A, L]]] extends Bag[A]
       _.hasItems
     )
     currentPartitionOpt.map(_.members).getOrElse(listFactory.newInstance.asInstanceOf[L])
+  }
+
+  override def toScala: mutable.HashMap[A, ListBuffer[A]] = {
+    val partitionMap = new mutable.HashMap[A, ListBuffer[A]]
+    items.iterator.foreach({ case Partition(key, members) =>
+      val memberList = members.toScala
+      partitionMap(key) = memberList
+    })
+    partitionMap
   }
 }

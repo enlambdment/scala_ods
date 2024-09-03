@@ -1,6 +1,7 @@
 package api
 
 import cats.kernel.Eq
+import scala.collection.mutable
 
 /**
  * "The USet interface represents an unordered set of unique
@@ -31,4 +32,6 @@ trait USet[A] {
   def add(x: A): Boolean
   def remove(x: A): Option[A]
   def find(x: A): Option[A]
+
+  def toScala: mutable.HashSet[A]
 }
