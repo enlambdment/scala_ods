@@ -1,6 +1,7 @@
 package api
 
 import cats.kernel.Eq
+
 import scala.collection.mutable
 
 /**

@@ -5,7 +5,6 @@ import impl.{USetMethod => UM, USetReturn => UR}
 import org.scalacheck.{Arbitrary, Gen}
 
 import scala.collection.mutable
-import scala.util.Try
 
 /**
  * We require a different strategy for property testing USet's
