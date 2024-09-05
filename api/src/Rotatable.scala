@@ -41,4 +41,7 @@ object Rotatable {
       }
     }
   }
+
+  // Helper method to summon an instance of Rotatable
+  def apply[A, S[_]](implicit rot: Rotatable[A, S]): Rotatable[A, S] = rot
 }
