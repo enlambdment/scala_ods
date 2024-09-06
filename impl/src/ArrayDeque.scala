@@ -2,7 +2,7 @@ package impl
 
 import scala.reflect.ClassTag
 
-class ArrayDeque[A: ClassTag] extends api.List[A] with api.Deque[A] {
+class ArrayDeque[A: ClassTag] extends api.List[A] with api.Deque[A] with api.Rotatable[A, api.List] {
   private var a = new Array[A](1)
   private var j = 0
   private var n = 0
@@ -89,4 +89,27 @@ class ArrayDeque[A: ClassTag] extends api.List[A] with api.Deque[A] {
   override def addLast(x: A): Unit = add(size(), x)
 
   override def removeLast(): A = remove(size() - 1)
+
+  // Efficient sequence rotation for ArrayDeque
+  override val rotator: ArrayDeque[A] = this
+
+  override def rotate(r: Int): Unit = {
+    // Calculate effective index of rotation, just like always
+    val rPos = Math.floorMod(r, n)
+
+    // To decide the most efficient approach, compare r vs. l.
+    // Note that we work directly on the backing array.
+    if (2 * rPos < n) {
+      for (i <- Range.inclusive(1, rPos)) {
+        a(Math.floorMod(j - i, a.length)) = this.get(n - i)
+      }
+      j = Math.floorMod(j - rPos, a.length)
+    } else {
+      val s = n - rPos
+      for (i <- Range(0, s)) {
+        a(Math.floorMod(j + n + i, a.length)) = this.get(i)
+      }
+      j = Math.floorMod(j + s, a.length)
+    }
+  }
 }
